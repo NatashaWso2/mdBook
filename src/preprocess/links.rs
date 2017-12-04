@@ -88,7 +88,7 @@ impl<'a> Link<'a> {
                                                                                      for link {}",
                                                                                     self.link_text)
                                                                         })?;
-                let ftype = if !attrs.is_empty() { "rust," } else { "rust" };
+                let ftype = if !attrs.is_empty() { "ballerina," } else { "ballerina" };
                 Ok(format!("```{}{}\n{}\n```\n", ftype, attrs.join(","), contents))
             }
         }
