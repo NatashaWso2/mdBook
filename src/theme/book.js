@@ -361,31 +361,19 @@ function run_rust_code(code_block) {
     }
 
     let text = playpen_text(code_block);
-    
-    var params = {
-	channel: "stable",
-	mode: "debug",
-	crateType: "bin",
-	tests: false,
-	code: text,
-    }
-
-    if(text.indexOf("#![feature") !== -1) {
-        params.channel = "nightly";
-    }
 
     result_block.text("Running...");
 
     $.ajax({
-        url: "https://play.rust-lang.org/execute",
+        url: "https://gateway.api.cloud.wso2.com/t/tryballerina/executor/ballerina/executeAsProcess",
         method: "POST",
         crossDomain: true,
-        dataType: "json",
         contentType: "application/json",
-        data: JSON.stringify(params),
-        timeout: 15000,
+        data: JSON.stringify({"content": text, "arguments": ""}),
+        timeout: 20000,
+        headers: {"Authorization": "Bearer 5ff2cdce-a66e-35d6-b1e0-764b51767401"},
         success: function(response){
-           result_block.text(response.success ? response.stdout : response.stderr);
+           result_block.text(response);
         },
         error: function(qXHR, textStatus, errorThrown){
             result_block.text("Playground communication " + textStatus);
