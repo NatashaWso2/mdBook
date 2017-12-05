@@ -545,21 +545,13 @@ fn add_playpen_pre(html: &str, playpen_config: &Playpen) -> String {
         {
             // wrap the contents in an external pre block
             if playpen_config.editable && classes.contains("editable") ||
-                text.contains("function main") || text.contains("service")
+                text.contains("function main") || text.contains("service") || text.contains("ballerina")
             {
                 format!("<pre class=\"playpen\">{}</pre>", text)
             } else {
                 // we need to inject our own main
-                let (attrs, code) = partition_source(code);
-
-                format!("<pre class=\"playpen\"><code class=\"{}\">\n# \
-                         #![allow(unused_variables)]\n\
-                         {}#fn main() {{\n\
-                         {}\
-                         #}}</code></pre>",
-                        classes,
-                        attrs,
-                        code)
+                // let (attrs, code) = partition_source(code);
+                format!("<pre class=\"playpen\">{}</pre>", code)
             }
         } else {
             // not language-rust, so no-op
@@ -568,28 +560,6 @@ fn add_playpen_pre(html: &str, playpen_config: &Playpen) -> String {
     })
          .into_owned()
 }
-
-fn partition_source(s: &str) -> (String, String) {
-    let mut after_header = false;
-    let mut before = String::new();
-    let mut after = String::new();
-
-    for line in s.lines() {
-        let trimline = line.trim();
-        let header = trimline.chars().all(|c| c.is_whitespace()) || trimline.starts_with("#![");
-        if !header || after_header {
-            after_header = true;
-            after.push_str(line);
-            after.push_str("\n");
-        } else {
-            before.push_str(line);
-            before.push_str("\n");
-        }
-    }
-
-    (before, after)
-}
-
 
 struct RenderItemContext<'a> {
     handlebars: &'a Handlebars,

@@ -211,7 +211,7 @@ $( document ).ready(function() {
             pre_block.prepend("<div class=\"buttons\"></div>");
             buttons = pre_block.find(".buttons");
         }
-        buttons.prepend("<i class=\"fa fa-play play-button hidden\" title=\"Run this code\"></i>");
+        // buttons.prepend("<i class=\"fa fa-play play-button hidden\" title=\"Run this code\"></i>");
         buttons.prepend("<i class=\"fa fa-copy clip-button\" title=\"Copy to clipboard\"><i class=\"tooltiptext\"></i></i>");
 
         let code_block = pre_block.find("code").first();
