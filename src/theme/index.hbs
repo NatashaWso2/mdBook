@@ -52,11 +52,11 @@
         <script src="store.js"></script>
 
     </head>
-    <body class="light">
+    <body class="rust">
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script type="text/javascript">
             var theme = store.get('mdbook-theme');
-            if (theme === null || theme === undefined) { theme = 'light'; }
+            if (theme === null || theme === undefined) { theme = 'rust'; }
             $('body').removeClass().addClass(theme);
         </script>
 
@@ -77,6 +77,7 @@
                 <div id="menu-bar" class="menu-bar">
                     <div class="left-buttons">
                         <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="edit-button" class="fa fa-edit">Edit</i>
                         <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
                     </div>
 
@@ -128,6 +129,12 @@
             if ($(".fa").css("font-family") !== "FontAwesome") {
                 $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
             }
+            // START - Ballerina-By-Example customization
+            $("#edit-button").click(function(){
+                var editWindow = window.open("https://github.com/NatashaWso2/ballerina/edit/master/samples/" +
+                        "ballerina-by-example/examples/{{ path }}");
+            });
+            // END - Ballerina-By-Example customization
         </script>
 
         <!-- Livereload script (if served using the cli tool) -->
