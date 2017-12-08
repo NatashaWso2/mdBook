@@ -235,9 +235,11 @@ $( document ).ready(function() {
     });
 
     $("#edit-code-button").click(function(){
-        // var path = url.replace(".html", ".bal");
+        var path = url.replace(".html", ".bal");
+        // get the path of the bal file
+        path = path.split("/").splice(-2).join("/")
         var editWindow = window.open("https://github.com/NatashaWso2/examples/edit/master/modules/ballerina-by-example/" +
-          "src/{{ path }}");
+                            "src/"+ path);
     });
 
     var clipboardSnippets = new Clipboard('.clip-button', {
