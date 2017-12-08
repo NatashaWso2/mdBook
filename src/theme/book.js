@@ -236,8 +236,7 @@ $( document ).ready(function() {
 
     $("#edit-code-button").click(function(){
         var path = url.replace(".html", ".bal");
-        var editWindow = window.open("https://github.com/NatashaWso2/examples/edit/master/modules/ballerina-by-example/" +
-                        "src" + path);
+        var editWindow = window.open(path);
     });
 
     var clipboardSnippets = new Clipboard('.clip-button', {
