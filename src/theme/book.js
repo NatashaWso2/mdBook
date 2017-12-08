@@ -186,7 +186,7 @@ $( document ).ready(function() {
         if(!lines_hidden) { return; }
 
         // add expand button
-        pre_block.prepend("<div class=\"buttons\"><i class=\"fa fa-expand\" title=\"Show hidden lines\"></i></div>");
+        // pre_block.prepend("<div class=\"buttons\"><i class=\"fa fa-expand\" title=\"Show hidden lines\"></i></div>");
 
         pre_block.find("i").click(function(e){
             if( $(this).hasClass("fa-expand") ) {
@@ -213,6 +213,7 @@ $( document ).ready(function() {
         }
         // buttons.prepend("<i class=\"fa fa-play play-button hidden\" title=\"Run this code\"></i>");
         buttons.prepend("<i class=\"fa fa-copy clip-button\" title=\"Copy to clipboard\"><i class=\"tooltiptext\"></i></i>");
+        buttons.prepend("<i id=edit-code-button class=\"fa fa-edit\">Edit</i>");
 
         let code_block = pre_block.find("code").first();
         if (window.ace && code_block.hasClass("editable")) {
@@ -231,6 +232,12 @@ $( document ).ready(function() {
             editor.setValue(editor.originalCode);
             editor.clearSelection();
         });
+    });
+
+    $("#edit-code-button").click(function(){
+        var path = url.replace(".html", ".bal");
+        var editWindow = window.open("https://github.com/NatashaWso2/examples/edit/master/modules/ballerina-by-example/" +
+                        "src" + path);
     });
 
     var clipboardSnippets = new Clipboard('.clip-button', {
