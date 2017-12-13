@@ -211,11 +211,13 @@ $( document ).ready(function() {
             pre_block.prepend("<div class=\"buttons\"></div>");
             buttons = pre_block.find(".buttons");
         }
-        // buttons.prepend("<i class=\"fa fa-play play-button hidden\" title=\"Run this code\"></i>");
-        buttons.prepend("<i class=\"fa fa-copy clip-button\" title=\"Copy to clipboard\"><i class=\"tooltiptext\"></i></i>");
-        buttons.prepend("<i id=edit-code-button class=\"fa fa-edit\">Edit</i>");
-
-        let code_block = pre_block.find("code").first();
+        // Only provide the edit and copy button to bal files
+        if (block == 0) {
+            buttons.prepend("<i id=edit-code-button class=\"fa fa-edit\">Edit</i>");
+            //buttons.prepend("<i class=\"fa fa-play play-button hidden\" title=\"Run this code\"></i>");
+            buttons.prepend("<i class=\"fa fa-copy clip-button\" title=\"Copy to clipboard\"><i class=\"tooltiptext\"></i></i>");
+        }
+        var code_block = pre_block.find("code").first();
         if (window.ace && code_block.hasClass("editable")) {
             buttons.prepend("<i class=\"fa fa-history reset-button\" title=\"Undo changes\"></i>");
         }

@@ -59,13 +59,13 @@ impl<'a> Link<'a> {
 
         link_type.and_then(|lnk| {
             cap.get(0).map(|mat| {
-                               Link {
-                                   start_index: mat.start(),
-                                   end_index: mat.end(),
-                                   link: lnk,
-                                   link_text: mat.as_str(),
-                               }
-                           })
+                Link {
+                    start_index: mat.start(),
+                    end_index: mat.end(),
+                    link: lnk,
+                    link_text: mat.as_str(),
+                }
+            })
         })
     }
 
@@ -76,20 +76,75 @@ impl<'a> Link<'a> {
             LinkType::Escaped => Ok((&self.link_text[1..]).to_owned()),
             LinkType::Include(ref pat) => {
                 file_to_string(base.join(pat)).chain_err(|| {
-                                                             format!("Could not read file for \
+                    format!("Could not read file for \
                                                                       link {}",
-                                                                     self.link_text)
-                                                         })
+                            self.link_text)
+                })
             }
             LinkType::Playpen(ref pat, ref attrs) => {
                 let contents = file_to_string(base.join(pat)).chain_err(|| {
-                                                                            format!("Could not \
+                    format!("Could not \
                                                                                      read file \
                                                                                      for link {}",
-                                                                                    self.link_text)
-                                                                        })?;
-                let ftype = if !attrs.is_empty() { "ballerina," } else { "ballerina" };
-                Ok(format!("```{}{}\n{}\n```\n", ftype, attrs.join(","), contents))
+                            self.link_text)
+                })?;
+
+                // Content: Entire code
+                let content_vector: Vec<&str> = contents.split("\n").collect();
+
+                // Check if the file is the bal file or the response bash file
+                let comment_format;
+                if base.join(pat).display().to_string().contains(".bal") {
+                    comment_format = "//";
+                } else {
+                    comment_format = "#";
+                }
+
+                let mut code_vector: Vec<String> = Vec::new();
+                let mut comments_vector: Vec<String> = Vec::new();
+                for line in content_vector.iter() {
+                    let index = content_vector.iter().position(|&r| r.to_string() ==
+                        line.to_string()).unwrap();
+                    if line.trim_left().to_string().starts_with(comment_format) {
+                        // Trim the comment for whitespaces and remove the starting `//`
+                        let mut comment_line = String::from(line.to_string());
+                        comment_line = comment_line.trim().to_string();
+                        comment_line = comment_line.trim_left_matches(comment_format).to_string();
+                        comment_line = comment_line.trim_left().to_string();
+                        comments_vector.push(comment_line);
+                    } else {
+                        code_vector.push(line.to_string());
+                        if comments_vector.len() < code_vector.len() {
+                            comments_vector.push("".to_owned());
+                        }
+                        if comments_vector.len() > code_vector.len() {
+                            if index < content_vector.len() - 1 {
+                                if content_vector[index + 1].trim_left().to_string().starts_with(comment_format)
+                                    || content_vector[index + 1].is_empty() {
+                                    for _i in code_vector.len()..comments_vector.len() {
+                                        code_vector.push("".to_owned());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Make both the comments and code vectors equal in size
+                if comments_vector.len() > code_vector.len() {
+                    for _i in code_vector.len()..comments_vector.len() {
+                        code_vector.push("".to_owned());
+                    }
+                } else {
+                    for _i in comments_vector.len()..code_vector.len() {
+                        comments_vector.push("".to_owned());
+                    }
+                }
+                let code: String = code_vector.join("\n");
+                let comments: String = comments_vector.join("\n");
+                let ftype = if base.join(pat).display().to_string().contains(".bal") {
+                    "ballerina," } else {  "bash," };
+                Ok(format!("\n```comment\n{}\n````\n```{}{}\n{}\n```\n", comments, ftype,
+                           attrs.join(","), code))
             }
         }
     }
@@ -167,11 +222,11 @@ fn test_find_links_simple_link() {
 
     assert_eq!(res,
                vec![Link {
-                        start_index: 22,
-                        end_index: 42,
-                        link: LinkType::Playpen(PathBuf::from("file.rs"), vec![]),
-                        link_text: "{{#playpen file.rs}}",
-                    },
+                   start_index: 22,
+                   end_index: 42,
+                   link: LinkType::Playpen(PathBuf::from("file.rs"), vec![]),
+                   link_text: "{{#playpen file.rs}}",
+               },
                     Link {
                         start_index: 47,
                         end_index: 68,
@@ -189,11 +244,11 @@ fn test_find_links_escaped_link() {
 
     assert_eq!(res,
                vec![Link {
-                        start_index: 38,
-                        end_index: 68,
-                        link: LinkType::Escaped,
-                        link_text: "\\{{#playpen file.rs editable}}",
-                    }]);
+                   start_index: 38,
+                   end_index: 68,
+                   link: LinkType::Escaped,
+                   link_text: "\\{{#playpen file.rs editable}}",
+               }]);
 }
 
 #[test]
@@ -205,11 +260,11 @@ fn test_find_playpens_with_properties() {
     println!("\nOUTPUT: {:?}\n", res);
     assert_eq!(res,
                vec![Link {
-                        start_index: 38,
-                        end_index: 68,
-                        link: LinkType::Playpen(PathBuf::from("file.rs"), vec!["editable"]),
-                        link_text: "{{#playpen file.rs editable }}",
-                    },
+                   start_index: 38,
+                   end_index: 68,
+                   link: LinkType::Playpen(PathBuf::from("file.rs"), vec!["editable"]),
+                   link_text: "{{#playpen file.rs editable }}",
+               },
                     Link {
                         start_index: 89,
                         end_index: 136,
