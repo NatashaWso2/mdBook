@@ -129,8 +129,8 @@ table thead td {
   padding-left: 0;
 }
 .sidebar-visible .page-wrapper {
-  padding-left: 300px;
-  margin-right: -300px;
+  /*padding-left: 300px;
+  margin-right: -300px;*/
 }
 .page {
   outline: 0;
@@ -701,6 +701,7 @@ table thead td {
 .rust {
   color: #262625;
   background-color: #fff;
+  overflow-x: hidden;
 /* Inline code */
 }
 .rust .content .header:link,
