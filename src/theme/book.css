@@ -1036,5 +1036,5 @@ table thead td {
 
 i.fa.fa-copy.clip-button {
   right: 15px;
-  position: absolute;
+  /*position: absolute;*/
 }
