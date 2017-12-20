@@ -461,7 +461,7 @@ table thead td {
   color: #008cff;
 }
 .light pre > .buttons i {
-  margin-left: 8px;
+  margin-left: -35px;
 }
 .light pre > .result {
   margin-top: 10px;
@@ -1034,6 +1034,6 @@ table thead td {
 }
 
 i.fa.fa-copy.clip-button {
-  right: 15px;
+  /*right: 15px;*/
   position: absolute;
 }
